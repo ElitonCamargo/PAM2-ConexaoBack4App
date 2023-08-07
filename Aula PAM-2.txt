@@ -1,0 +1,69 @@
+Atualize o node eo npm
+https://nodejs.org/dist/v18.17.0/node-v18.17.0-x64.msi
+npm update -g
+
+Mude a versão do Expo para a última versão com suporte a navegador.
+	"expo": "~48.0.17",
+
+Limpe o cache do npm 
+	npm cache clean --force
+
+Instale o suporte à navegação.
+	npx expo install react-native-web
+	npx expo install react-dom
+	npx expo install  @expo/webpack-config
+
+Rodando o aplicativo no navegador
+	npx expo start -w
+
+Pare o navegador: CTRL+C
+
+Instalando as dependências do Back4App
+Instale o Parse do Back4App
+	npm install parse @react-native-async-storage/async-storage –save
+
+Obtenha as chaves:
+	“Application ID” e “Javascript KEY”
+	APPLICATION_ID = 'yRspv6kXPp55Hl6mR2gJ841HRzusgPji2oR8v1OS';
+	JAVASCRIPT_KEY = 'drRYqqOqnZ2gnL1Lyt49ivP4t9zGHnHhlIGInfA7';
+
+Importe as dependências instaladas aplicativo;
+	import Parse from "parse/react-native.js";
+	import AsyncStorage from '@react-native-async-storage/async-storage';
+
+Inicialize a variável parse do SDK do Back4App
+	Parse.setAsyncStorage(AsyncStorage);
+
+Configure os dados de acesso a sua Api
+	Parse.initialize('YOUR_APPLICATION_ID_HERE','YOUR_JAVASCRIPT_KEY_HERE');
+	
+	Exemplo:
+	const APPLICATION_ID = 'yRspv6kXPp55Hl6mR2gJ841HRzusgPji2oR8v1OS';
+	const JAVASCRIPT_KEY = 'drRYqqOqnZ2gnL1Lyt49ivP4t9zGHnHhlIGInfA7';
+	Parse.initialize(APPLICATION_ID,JAVASCRIPT_KEY);
+	Parse.serverURL = 'https://parseapi.back4app.com/';
+
+Adicione um botão na aplicação que executará a função de consulta ao clicar.
+
+import { Button } from 'react-native';
+<Button
+	title='Listar produtos'
+	onPress={consultarProdutos}
+/>
+
+Crie uma função de consulta:
+const consultarProdutos = async () => {
+  const Produto = Parse.Object.extend('Produto');
+  const query = new Parse.Query(Produto);
+  try {
+    const listaDeProdutos = await query.find();
+    for (const produto of listaDeProdutos) {
+      const nome = produto.get('nome')
+      const quantidade = produto.get('quantidade')
+      const valor = produto.get('valor')
+      console.log(`Nome:${nome} Quant:${quantidade} Valor: RS ${valor}`)
+    }
+  } catch (error) {
+    console.error('Erro', error);
+  }
+};
